@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <header>欢迎您, <span>{{username || '123'}}</span></header>
+    <header>欢迎您, <span>{{ username }}</span></header>
     <div class="content">
       <div class="rooms">
         <div class="title">房间</div>
@@ -18,9 +18,17 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  name: 'home',
-  props: ['username'],
+  name: 'home-component',
+  beforeCreate() {
+    if(!this.$store.state.username) {
+      this.$router.push({name: 'login'})
+    }
+  },
+  computed: mapState([
+    'username',
+  ])
 }
 </script>
 

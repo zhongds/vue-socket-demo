@@ -2,7 +2,7 @@
   <div class="login">
     <h1>CHAT ROOM</h1>
     <h2>please set your display name first!</h2>
-    <input type="text" ref="username-input">
+    <input type="text" ref="username-input" @input="setUsername" @keyup.enter="inputEnter">
   </div>
 </template>
 
@@ -11,6 +11,14 @@ export default {
   name: 'login',
   mounted() {
     this.$refs['username-input'].focus()
+  },
+  methods: {
+    inputEnter(e) {
+      this.$router.push('/')
+    },
+    setUsername(e) {
+      this.$store.commit('setUsername', e.target.value)
+    }
   }
 }
 </script>
