@@ -2,7 +2,7 @@
   <div class="chat">
     <div class="title">
       <span class="left pointer" @click="goHome">返回</span>
-      <span v-if="isPrivate">{{ chatName }}</span>
+      <span v-if="isPrivate">{{ chatUser }}</span>
       <span v-else>{{ roomName }} (<span>{{ roomNums }}</span>)</span>
       <span v-if="!isPrivate" class="right pointer">详情</span>
     </div>
@@ -16,19 +16,29 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'chat',
   props: {
     isPrivate: Boolean,
-    chatName: String,
+    chatUser: String,
     roomName: String,
-    roomNums: Number,
-    username: String,
+  },
+  beforeCreate() {
+    if(!this.$store.state.username) {
+      this.$router.push({name: 'login'})
+    }
   },
   data() {
     return {
-
+      numUsers: 0
     }
+  },
+  mounted() {
+    this.$socket.on('join room', function (data) {
+      console.log('===', data);
+      this.numUsers = data.numUsers;
+    })
   },
   methods: {
     goHome() {
@@ -52,6 +62,14 @@ export default {
         e.target.value = '';
       }
     }
+  },
+  computed: {
+    roomNums() {
+      return this.numUsers;
+    },
+    ...mapState([
+      'username',
+    ])
   }
 }
 </script>

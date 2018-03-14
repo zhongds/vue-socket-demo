@@ -25,13 +25,13 @@ export default new Router({
       path: '/chat',
       name: 'chat',
       component: Chat,
-      props: {
-        isPrivate: false,
-        chatName: '123',
-        roomName: '聊天室1',
-        roomNums: 20,
-        username: 'test'
-      }
+      props: (route) => ({isPrivate: false, roomName: route.query.roomName}),
+    },
+    {
+      path: '/private-chat',
+      name: 'private-chat',
+      component: Chat,
+      props: (route) => ({isPrivate: true, chatUser: route.query.chatUser}),
     },
   ]
 })

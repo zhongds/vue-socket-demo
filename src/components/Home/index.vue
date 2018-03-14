@@ -4,7 +4,7 @@
     <div class="content">
       <div class="rooms">
         <div class="title">房间</div>
-        <div class="chat-rooms">
+        <div class="chat-rooms" @click.stop.prevent="clickChatRoom">
           <span name="1">聊天室1</span>
           <span name="2">聊天室2</span>
           <span name="3">聊天室3</span>
@@ -20,10 +20,24 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'home-component',
+  name: 'home',
   beforeCreate() {
     if(!this.$store.state.username) {
       this.$router.push({name: 'login'})
+    }
+  },
+  methods: {
+    clickChatRoom(e) {
+      const target = e.target;
+      if(target.tagName === 'SPAN') {
+        const roomName = target.innerHtml;
+        this.$router.push({name: 'chat', query: {roomName}})
+        console.log('1111111111');
+        this.$socket.emit('join room', {
+          username: this.username,
+          roomName,
+        })
+      }
     }
   },
   computed: mapState([
