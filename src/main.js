@@ -8,7 +8,6 @@ import store from './store'
 import * as io from 'socket.io-client'
 
 const socket = io('http://localhost:3003')
-console.log('index')
 
 Vue.config.productionTip = false
 

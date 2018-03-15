@@ -3,14 +3,14 @@
     <div class="title">
       <span class="left pointer" @click="goHome">返回</span>
       <span v-if="isPrivate">{{ chatUser }}</span>
-      <span v-else>{{ roomName }} (<span>{{ roomNums }}</span>)</span>
+      <span v-else>{{ roomName }} (<span>{{ numUsers }}</span>)</span>
       <span v-if="!isPrivate" class="right pointer">详情</span>
     </div>
-    <ul class="content" ref="content">
+    <ul class="content" ref="chat-content">
 
     </ul>
     <div class="bottom">
-        <input type="text" @keyup.enter="showChatContent" />
+        <input type="text" @keyup.enter="chatInputEnter" />
     </div>
   </div>
 </template>
@@ -22,7 +22,6 @@ export default {
   props: {
     isPrivate: Boolean,
     chatUser: String,
-    roomName: String,
   },
   beforeCreate() {
     if(!this.$store.state.username) {
@@ -31,42 +30,72 @@ export default {
   },
   data() {
     return {
+      roomName: '',
       numUsers: 0
     }
   },
   mounted() {
-    this.$socket.on('join room', function (data) {
-      console.log('===', data);
+    this.$socket.on('join room', (data) => {
       this.numUsers = data.numUsers;
-    })
+      this.roomName = data.roomName;
+    });
+    this.$socket.on('leave room', (data) => {
+      this.showTip(`${data.username} leave room`);
+      this.numUsers = data.numUsers;
+    });
+    this.$socket.on('new private message', (data) => {
+      console.log('============1');
+      this.showChatContent(data);
+    });
+    this.$socket.on('new message', (data) => {
+      console.log('============2');
+      this.showChatContent(data);
+    });
+
+    this.$socket.on('disconnect', () => {
+      this.showTip(`${this.username} have been remove chat room`);
+    });
+
+    this.$socket.on('reconnect', () => {
+      this.showTip(`${this.username} have been reconnected`);
+    });
   },
   methods: {
     goHome() {
+      this.$socket.emit('leave room');
       this.$router.push('/');
     },
-    showChatContent(e) {
-      console.log('event', e);
+    chatInputEnter(e) {
       const value = e.target.value.trim();
       if (value) {
-        var liEl = document.createElement('li');
-        liEl.classList.add('row');
-        var spanEl1 = document.createElement('span');
-        spanEl1.classList.add('username');
-        spanEl1.innerText = this.username;
-        liEl.appendChild(spanEl1);
-        var spanEl2 = document.createElement('span');
-        spanEl2.classList.add('messageBody');
-        spanEl2.innerText = value;
-        liEl.appendChild(spanEl2);
-        this.$refs['content'].appendChild(liEl);
-        e.target.value = '';
+        this.$socket.emit('new message', value);
+        e.target.value = '';        
       }
+    },
+    showChatContent(data) {
+      console.log('this', this);
+      var liEl = document.createElement('li');
+      liEl.classList.add('row');
+      var spanEl1 = document.createElement('span');
+      spanEl1.classList.add('username');
+      spanEl1.innerText = data.username;
+      liEl.appendChild(spanEl1);
+      var spanEl2 = document.createElement('span');
+      spanEl2.classList.add('messageBody');
+      spanEl2.innerText = data.message;
+      liEl.appendChild(spanEl2);
+      // ref在第二次的时候失效，没找到元素，原因未知
+      document.querySelector('.chat .content').appendChild(liEl);
+    },
+    showTip(content) {
+      var liEl = document.createElement('li');
+      liEl.classList.add('row');
+      liEl.classList.add('tip');
+      liEl.innerText = content;
+      roomChatContentEl.appendChild(liEl);
     }
   },
   computed: {
-    roomNums() {
-      return this.numUsers;
-    },
     ...mapState([
       'username',
     ])
@@ -136,6 +165,13 @@ export default {
     word-wrap: break-word;
     width: 80%;
     float: right;
+  }
+
+  .tip {
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+    color: #ccc;
   }
 </style>
 

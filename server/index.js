@@ -48,6 +48,7 @@ io.on('connection', function(socket){
       // 房间内所有人都能收到信息，包括自己
       io.to(data.roomName).emit('join room', {
         numUsers: roomMap[socket.room],
+        roomName: data.roomName
       })
       // 房间内所有人都能收到信息，除了自己
       // socket.broadcast.to(data.roomName).emit('join room', {
@@ -57,8 +58,12 @@ io.on('connection', function(socket){
     });  
   })
 
+  socket.on('leave room', function() {
+    leaveRoom(socket);
+  })
+
   socket.on('new message', function (data) {
-    socket.broadcast.to(socket.room).emit('new message', {
+    io.to(socket.room).emit('new message', {
       username: socket.username,
       message: data
     });
@@ -72,18 +77,23 @@ io.on('connection', function(socket){
   })
 
   socket.on('disconnect', function() {
-    socket.leave(socket.room, function () {
-      console.log(`${socket.username} leave ${socket.room}`);
-      // io.sockets.in(roomid).emit('system','hello,'+data+'加入了房间');//包括自己
-      --roomMap[socket.room];
-      io.to(socket.room).emit('leave room', {
-        username: socket.username,
-        numUsers: roomMap[socket.room],
-      });
-    })
+    leaveRoom(socket);
   });
   
-}); 
+});
+
+function leaveRoom(socket) {
+  socket.leave(socket.room, function () {
+    console.log(`${socket.username} leave ${socket.room}`);
+    // io.sockets.in(roomid).emit('system','hello,'+data+'加入了房间');//包括自己
+    --roomMap[socket.room];
+    io.to(socket.room).emit('leave room', {
+      username: socket.username,
+      numUsers: roomMap[socket.room],
+    });
+    socket.room = null;      
+  })
+}
 
 const port = process.env.PORT || 3003;
 server.listen(port, function() {

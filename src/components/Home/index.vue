@@ -30,7 +30,7 @@ export default {
     clickChatRoom(e) {
       const target = e.target;
       if(target.tagName === 'SPAN') {
-        const roomName = target.innerHtml;
+        const roomName = target.innerHTML;
         this.$router.push({name: 'chat', query: {roomName}})
         console.log('1111111111');
         this.$socket.emit('join room', {
