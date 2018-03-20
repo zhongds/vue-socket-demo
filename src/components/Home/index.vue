@@ -31,7 +31,7 @@ export default {
       const target = e.target;
       if(target.tagName === 'SPAN') {
         const roomName = target.innerHTML;
-        this.$router.push({name: 'chat', query: {roomName}})
+        this.$router.push({name: 'chat'})
         this.$socket.emit('join room', {
           username: this.username,
           roomName,

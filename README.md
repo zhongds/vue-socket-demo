@@ -25,3 +25,10 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
+## 功能
+- 分房间聊天（已完成）
+- 私聊
+- 创建房间
+- 发广播

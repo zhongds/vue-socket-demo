@@ -6,9 +6,7 @@
       <span v-else>{{ roomName }} (<span>{{ numUsers }}</span>)</span>
       <span v-if="!isPrivate" class="right pointer">详情</span>
     </div>
-    <ul class="content" ref="chat-content">
-
-    </ul>
+    <chat-content :data="contentData"></chat-content>
     <div class="bottom">
         <input type="text" @keyup.enter="chatInputEnter" />
     </div>
@@ -17,8 +15,13 @@
 
 <script>
 import { mapState } from 'vuex'
+import ChatContent from './ChatContent'
+
 export default {
   name: 'chat',
+  components: {
+    'chat-content': ChatContent,
+  },
   props: {
     isPrivate: Boolean,
     chatUser: String,
@@ -31,34 +34,55 @@ export default {
   data() {
     return {
       roomName: '',
-      numUsers: 0
+      numUsers: 0,
+      contentData: []
     }
   },
   mounted() {
     this.$socket.on('join room', (data) => {
       this.numUsers = data.numUsers;
       this.roomName = data.roomName;
-      this.showTip(`${data.username} join room`);
+      this.contentData.push({
+        type: 'tip',
+        message: `${data.username} join room`
+      })
     });
     this.$socket.on('leave room', (data) => {
-      this.showTip(`${data.username} leave room`);
+      this.contentData.push({
+        type: 'tip',
+        message: `${data.username} leave room`
+      })
       this.numUsers = data.numUsers;
     });
     this.$socket.on('new private message', (data) => {
-      console.log('============1');
-      this.showChatContent(data);
+      // this.showChatContent(data);
+      this.contentData.push({
+        type: 'chat-content',
+        username: data.username,
+        message: data.message
+      })
     });
     this.$socket.on('new message', (data) => {
-      console.log('============2');
-      this.showChatContent(data);
+      // this.showChatContent(data);
+      this.contentData.push({
+        type: 'chat-content',
+        username: data.username,
+        message: data.message
+      })
     });
 
     this.$socket.on('disconnect', () => {
-      this.showTip(`${this.username} have been remove chat room`);
+      this.contentData.push({
+        type: 'tip',
+        message: `${this.username} have been remove chat room`
+      })
     });
 
     this.$socket.on('reconnect', () => {
-      this.showTip(`${this.username} have been reconnected`);
+      this.contentData.push({
+        type: 'tip',
+        message: `${this.username} have been reconnected`
+      })
     });
   },
 
@@ -143,44 +167,4 @@ export default {
     border: 0;
     border-top: 1px solid #eae7e7;
   }
-
-  .content {
-    height: 100%;
-    overflow: auto;
-  }
 </style>
-
-<style>
-  .row {
-    overflow: hidden;
-    padding: 5px 0;
-  }
-
-  .username {
-    font-weight: bold;
-    font-size: 16px;
-    color: #4CAF50;
-    width: calc(20% - 20px);
-    float: left;
-    padding: 0 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .messageBody {
-    white-space: normal;
-    word-wrap: break-word;
-    width: 80%;
-    float: right;
-  }
-
-  .tip {
-    text-align: center;
-    width: 80%;
-    margin: 0 auto;
-    color: #ccc;
-  }
-</style>
-
-
-
