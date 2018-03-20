@@ -48,12 +48,13 @@ io.on('connection', function(socket){
       // 房间内所有人都能收到信息，包括自己
       io.to(data.roomName).emit('join room', {
         numUsers: roomMap[socket.room],
-        roomName: data.roomName
+        roomName: data.roomName,
+        username: data.username
       })
       // 房间内所有人都能收到信息，除了自己
       // socket.broadcast.to(data.roomName).emit('join room', {
-      //   username: socket.username,
-      //   numUsers: numUsers
+      //   numUsers: roomMap[socket.room],
+      //   roomName: data.roomName
       // });
     });  
   })

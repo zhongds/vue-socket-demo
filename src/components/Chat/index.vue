@@ -38,6 +38,7 @@ export default {
     this.$socket.on('join room', (data) => {
       this.numUsers = data.numUsers;
       this.roomName = data.roomName;
+      this.showTip(`${data.username} join room`);
     });
     this.$socket.on('leave room', (data) => {
       this.showTip(`${data.username} leave room`);
@@ -59,6 +60,12 @@ export default {
     this.$socket.on('reconnect', () => {
       this.showTip(`${this.username} have been reconnected`);
     });
+  },
+
+  beforeDestroy() {
+    console.log('chat room destroy');
+    // remove all events listeners
+    this.$socket.off();
   },
   methods: {
     goHome() {
@@ -92,7 +99,7 @@ export default {
       liEl.classList.add('row');
       liEl.classList.add('tip');
       liEl.innerText = content;
-      roomChatContentEl.appendChild(liEl);
+      document.querySelector('.chat .content').appendChild(liEl);
     }
   },
   computed: {
