@@ -1,5 +1,5 @@
 <template>
-  <ul class="content" v-if="data.length > 0">
+  <ul class="content" v-if="data.length">
     <template v-for="(item, index) in data">
       <li class="row" v-if="item.type === 'chat-content'" :key="index + 1">
         <span class="username">{{item.username}}</span>

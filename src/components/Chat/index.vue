@@ -103,28 +103,6 @@ export default {
         e.target.value = '';        
       }
     },
-    showChatContent(data) {
-      console.log('this', this);
-      var liEl = document.createElement('li');
-      liEl.classList.add('row');
-      var spanEl1 = document.createElement('span');
-      spanEl1.classList.add('username');
-      spanEl1.innerText = data.username;
-      liEl.appendChild(spanEl1);
-      var spanEl2 = document.createElement('span');
-      spanEl2.classList.add('messageBody');
-      spanEl2.innerText = data.message;
-      liEl.appendChild(spanEl2);
-      // ref在第二次的时候失效，没找到元素，原因未知
-      document.querySelector('.chat .content').appendChild(liEl);
-    },
-    showTip(content) {
-      var liEl = document.createElement('li');
-      liEl.classList.add('row');
-      liEl.classList.add('tip');
-      liEl.innerText = content;
-      document.querySelector('.chat .content').appendChild(liEl);
-    }
   },
   computed: {
     ...mapState([
