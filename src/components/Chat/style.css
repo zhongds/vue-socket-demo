@@ -1,0 +1,32 @@
+.title {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eae7e7;
+  overflow: hidden;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.bottom input {
+  padding: 5px 0;
+  width: 100%;
+  font-size: 16px;
+  outline: 0;
+  border: 0;
+  border-top: 1px solid #eae7e7;
+}

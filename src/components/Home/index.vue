@@ -26,12 +26,19 @@ export default {
       this.$router.push({name: 'login'})
     }
   },
+  mounted() {
+    this.$socket.on('connect', () => {
+      console.log(this.$socket.id); // 'G5p5...'
+    });
+  },
   methods: {
     clickChatRoom(e) {
       const target = e.target;
       if(target.tagName === 'SPAN') {
         const roomName = target.innerHTML;
-        this.$router.push({name: 'chat'})
+        this.$router.push({name: 'chat', query: {roomName}})
+        console.log('socket===', this.$socket);
+        console.log('home socket id', this.$socket.id);
         this.$socket.emit('join room', {
           username: this.username,
           roomName,

@@ -35,10 +35,21 @@ const io = require('socket.io')(server);
 // key: roomName, value: numUsers
 const roomMap = {};
 
+const socketUser = {};
+
 io.on('connection', function(socket){
-  console.log('io connect');
+  socket.on('login', function ({username}) {
+    let data;
+    if(!Object.keys(socketUser).includes(username)) {
+      data = {status: 200, username};
+      socketUser[username] = socket.id;
+    } else {
+      data = {status: 400, message: '名字重复，请重新输入'};
+    }
+    socket.emit('login', data);
+  })
+
   socket.on('join room', function (data) {
-    console.log('===================1211')
     socket.join(data.roomName, function () {
       // we store the username in the socket session for this client
       socket.username = data.username;
@@ -48,7 +59,6 @@ io.on('connection', function(socket){
       // 房间内所有人都能收到信息，包括自己
       io.to(data.roomName).emit('join room', {
         numUsers: roomMap[socket.room],
-        roomName: data.roomName,
         username: data.username
       })
       // 房间内所有人都能收到信息，除了自己
@@ -63,22 +73,24 @@ io.on('connection', function(socket){
     leaveRoom(socket);
   })
 
-  socket.on('new message', function (data) {
+  socket.on('new message', function (message) {
     io.to(socket.room).emit('new message', {
       username: socket.username,
-      message: data
+      message
     });
   })
 
   socket.on('new private message', function (data) {
-    socket.to(data.id).emit('new message', {
-      username: socket.username,
+    const socketId = socketUser[data.chatUser];
+    socket.to(socketId).emit('new private message', {
+      username: data.username,
       message: data.message,
     });
   })
 
   socket.on('disconnect', function() {
     leaveRoom(socket);
+    delete socketUser[socket.username];
   });
   
 });

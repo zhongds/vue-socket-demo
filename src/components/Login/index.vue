@@ -2,7 +2,7 @@
   <div class="login">
     <h1>CHAT ROOM</h1>
     <h2>please set your display name first!</h2>
-    <input type="text" ref="username-input" @input="setUsername" @keyup.enter="inputEnter">
+    <input type="text" ref="username-input" @keyup.enter="inputEnter">
   </div>
 </template>
 
@@ -10,15 +10,25 @@
 export default {
   name: 'login',
   mounted() {
-    this.$refs['username-input'].focus()
+    this.$refs['username-input'].focus();
+    this.$socket.on('login', (data) => {
+      if(data.status === 200) {
+        this.$store.commit('setUsername', data.username);
+        this.$router.push('/');
+      } else {
+        alert(data.message);
+      }
+    })
   },
   methods: {
     inputEnter(e) {
-      this.$router.push('/')
+      const value = e.target.value;
+      if (value) {
+        this.$socket.emit('login', {
+          username: value,
+        })
+      }
     },
-    setUsername(e) {
-      this.$store.commit('setUsername', e.target.value)
-    }
   }
 }
 </script>
