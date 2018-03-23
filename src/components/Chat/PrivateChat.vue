@@ -23,26 +23,10 @@ export default {
   props: {
     chatUser: String,
   },
-  data() {
-    return {
-      contentData: []
+  beforeCreate() {
+    if(!this.$store.state.username) {
+      this.$router.push({name: 'login'})
     }
-  },
-  mounted() {
-    this.$socket.on('new private message', (data) => {
-      console.log('private message');
-      this.contentData.push({
-        type: 'chat-content',
-        username: data.username,
-        message: data.message
-      })
-    });
-  },
-
-  beforeDestroy() {
-    console.log('private chat destroy');
-    // remove all events listeners
-    this.$socket.off();
   },
   methods: {
     goHome() {
@@ -59,6 +43,12 @@ export default {
       }
       e.target.value = '';
     },
+  },
+  computed: {
+    ...mapState({
+      username: state => state.username,
+      contentData: state => state.private[this.chatUser] || []
+    })
   }
 }
 </script>

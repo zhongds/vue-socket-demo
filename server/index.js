@@ -58,6 +58,7 @@ io.on('connection', function(socket){
       // echo globally (all clients) that a person has connected
       // 房间内所有人都能收到信息，包括自己
       io.to(data.roomName).emit('join room', {
+        roomName: data.roomName,
         numUsers: roomMap[socket.room],
         username: data.username
       })
@@ -75,6 +76,7 @@ io.on('connection', function(socket){
 
   socket.on('new message', function (message) {
     io.to(socket.room).emit('new message', {
+      roomName: socket.room,
       username: socket.username,
       message
     });
@@ -82,10 +84,7 @@ io.on('connection', function(socket){
 
   socket.on('new private message', function (data) {
     const socketId = socketUser[data.chatUser];
-    socket.to(socketId).emit('new private message', {
-      username: data.username,
-      message: data.message,
-    });
+    socket.to(socketId).emit('new private message',data);
   })
 
   socket.on('disconnect', function() {
@@ -101,6 +100,7 @@ function leaveRoom(socket) {
     // io.sockets.in(roomid).emit('system','hello,'+data+'加入了房间');//包括自己
     --roomMap[socket.room];
     io.to(socket.room).emit('leave room', {
+      roomName: socket.room,
       username: socket.username,
       numUsers: roomMap[socket.room],
     });

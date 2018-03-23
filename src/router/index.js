@@ -4,7 +4,8 @@ import HelloWorld from '@/components/HelloWorld'
 
 import Home from '@/components/Home'
 import Login from '@/components/Login'
-import Chat from '@/components/Chat'
+import RoomChat from '@/components/Chat/RoomChat';
+import PrivateChat from '@/components/Chat/PrivateChat';
 
 Vue.use(Router)
 
@@ -24,14 +25,14 @@ export default new Router({
     {
       path: '/chat',
       name: 'chat',
-      component: Chat,
-      props: (route) => ({isPrivate: false, roomName: route.query.roomName}),
+      component: RoomChat,
+      props: (route) => ({roomName: route.query.roomName}),
     },
     {
       path: '/private-chat',
       name: 'private-chat',
-      component: Chat,
-      props: (route) => ({isPrivate: true, chatUser: route.query.chatUser}),
+      component: PrivateChat,
+      props: (route) => ({chatUser: route.query.chatUser}),
     },
   ]
 })

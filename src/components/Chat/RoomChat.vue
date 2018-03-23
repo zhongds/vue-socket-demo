@@ -1,11 +1,11 @@
 <template>
   <div class="chat">
     <div class="title">
-      <span class="left pointer" @click="goHome">返回</span>
-      <span>{{ roomName }} (<span>{{ numUsers }}</span>)</span>
-      <span class="right pointer">详情</span>
+      <span class="left pointer" @click="goHome">{{username}}</span>
+      <span>{{ roomName }} (<span>{{ roomData && roomData.numUsers || 0 }}</span>)</span>
+      <span class="right pointer" @click="test">详情</span>
     </div>
-    <chat-content :data="contentData"></chat-content>
+    <chat-content :data="roomData && roomData.data || []"></chat-content>
     <div class="bottom">
       <input type="text" @keyup.enter="chatInputEnter" />
     </div>
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import ChatContent from './ChatContent'
 
 export default {
@@ -23,54 +24,10 @@ export default {
   props: {
     roomName: String,
   },
-  data() {
-    return {
-      numUsers: 0,
-      contentData: []
+  beforeCreate() {
+    if(!this.$store.state.username) {
+      this.$router.push({name: 'login'})
     }
-  },
-  mounted() {
-    this.$socket.on('join room', (data) => {
-      this.numUsers = data.numUsers;
-      this.contentData.push({
-        type: 'tip',
-        message: `${data.username} join room`
-      })
-    });
-    this.$socket.on('leave room', (data) => {
-      this.contentData.push({
-        type: 'tip',
-        message: `${data.username} leave room`
-      })
-      this.numUsers = data.numUsers;
-    });
-    this.$socket.on('new message', (data) => {
-      this.contentData.push({
-        type: 'chat-content',
-        username: data.username,
-        message: data.message
-      })
-    });
-
-    this.$socket.on('disconnect', () => {
-      this.contentData.push({
-        type: 'tip',
-        message: `${this.username} have been remove chat room`
-      })
-    });
-
-    this.$socket.on('reconnect', () => {
-      this.contentData.push({
-        type: 'tip',
-        message: `${this.username} have been reconnected`
-      })
-    });
-  },
-
-  beforeDestroy() {
-    console.log('chat room destroy');
-    // remove all events listeners
-    this.$socket.off();
   },
   methods: {
     goHome() {
@@ -80,10 +37,41 @@ export default {
     chatInputEnter(e) {
       const value = e.target.value.trim();
       if (value) {
-        !this.isPrivate && this.$socket.emit('new message', value);
+        this.$socket.emit('new message', value);
       }
       e.target.value = '';
     },
+    test() {
+      // this.$socket.emit('new message', {
+      //   roomName: 'ttttttttt', 
+      //   message: 'just test', 
+      //   username: '11111'
+      // });
+      // this.$store.commit('addPublicMessage', {
+      //   roomName: '11112321',
+      //   numUsers: 10,
+      //   data:{
+      //     tt: 'sfaa'
+      //   }
+      // })
+      // this.$store.commit('changePublic');
+      // this.$store.commit('setUsername', {name: '123'});
+    }
+  },
+  computed: {
+    ...mapState({
+      username: state => {
+        console.log('change username');
+        return state.username
+      },
+      roomData(state) {
+        console.log('this', this);
+        console.log('roomName', this.roomName);
+        console.log('data', state.public);
+        console.log('state', state);
+        return state.public && state.public[this.roomName]
+      }
+    })
   }
 }
 </script>

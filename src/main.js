@@ -4,10 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-
-import * as io from 'socket.io-client'
-
-const socket = io('http://localhost:3003')
+import socket from './socket'
 
 Vue.config.productionTip = false
 
