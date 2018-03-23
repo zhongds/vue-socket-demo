@@ -23,11 +23,6 @@ export default {
   props: {
     chatUser: String,
   },
-  beforeCreate() {
-    if(!this.$store.state.username) {
-      this.$router.push({name: 'login'})
-    }
-  },
   data() {
     return {
       contentData: []
@@ -45,7 +40,7 @@ export default {
   },
 
   beforeDestroy() {
-    console.log('chat room destroy');
+    console.log('private chat destroy');
     // remove all events listeners
     this.$socket.off();
   },
@@ -64,11 +59,6 @@ export default {
       }
       e.target.value = '';
     },
-  },
-  computed: {
-    ...mapState([
-      'username',
-    ])
   }
 }
 </script>

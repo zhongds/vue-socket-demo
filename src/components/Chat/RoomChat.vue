@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import ChatContent from './ChatContent'
 
 export default {
@@ -22,13 +21,7 @@ export default {
     'chat-content': ChatContent,
   },
   props: {
-    chatUser: String,
     roomName: String,
-  },
-  beforeCreate() {
-    if(!this.$store.state.username) {
-      this.$router.push({name: 'login'})
-    }
   },
   data() {
     return {
@@ -91,11 +84,6 @@ export default {
       }
       e.target.value = '';
     },
-  },
-  computed: {
-    ...mapState([
-      'username',
-    ])
   }
 }
 </script>
