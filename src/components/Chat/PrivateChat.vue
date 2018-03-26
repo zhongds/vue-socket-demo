@@ -4,7 +4,7 @@
       <span class="left pointer" @click="goHome">返回</span>
       <span>{{ chatUser }}</span>
     </div>
-    <chat-content :data="contentData || [] "></chat-content>
+    <chat-content :data="contentData" :username="username"></chat-content>
     <div class="bottom">
       <input type="text" @keyup.enter="chatInputEnter" />
     </div>
@@ -51,8 +51,7 @@ export default {
     ...mapState({
       username: 'username',
       contentData(state) {
-        console.log('=========private chat');
-        return state.private[this.chatUser]
+        return state.private[this.chatUser] || []
       }
     })
   }

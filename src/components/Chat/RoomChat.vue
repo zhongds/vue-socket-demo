@@ -2,10 +2,10 @@
   <div class="chat">
     <div class="title">
       <span class="left pointer" @click="goHome">返回</span>
-      <span>{{ roomName }} (<span>{{ roomData && roomData.numUsers || 0 }}</span>)</span>
+      <span>{{ roomName }} (<span>{{ roomData.numUsers || 0 }}</span>)</span>
       <span class="right pointer">详情</span>
     </div>
-    <chat-content :data="roomData && roomData.data || []"></chat-content>
+    <chat-content :data="roomData.data || []" :username="username"></chat-content>
     <div class="bottom">
       <input type="text" @keyup.enter="chatInputEnter" />
     </div>
@@ -49,7 +49,7 @@ export default {
       },
       roomData(state) {
         console.log('============room chat');
-        return state.public[this.roomName]
+        return state.public[this.roomName] || {}
       }
     })
   }

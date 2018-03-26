@@ -2,10 +2,10 @@
   <ul class="content" v-if="data.length" ref="chat-content">
     <template v-for="(item, index) in data">
       <li class="row" v-if="item.type === 'chat-content'" :key="index + 1">
-        <span class="username">
+        <span :class="{username: true, right: item.username === username, textRight: item.username === username}">
           <router-link :to="{name: 'private-chat', query: {chatUser: item.username}}">{{item.username}}</router-link>
         </span>
-        <span class="messageBody">{{item.message}}</span>
+        <span :class="{messageBody: true, textRight: item.username === username}">{{item.message}}</span>
       </li>
       <li class="row tip" v-if="item.type === 'tip'" :key="index + 1">{{item.message}}</li>
     </template>
@@ -16,12 +16,8 @@
 export default {
   name: 'chat-content',
   props: {
-    data: Array
-  },
-  methods: {
-    handleClickUsername(e) {
-      const username = e.target.innerHTML;
-    }
+    data: Array,
+    username: String,
   },
 }
 </script>
@@ -66,6 +62,14 @@ export default {
     margin: 0 auto;
     color: #ccc;
   }
+
+  .right {
+    float: right;
+  }
+  .textRight {
+    text-align: right;    
+  }
+
 </style>
 
 
