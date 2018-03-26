@@ -29,6 +29,6 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 ## 功能
 - 分房间聊天（已完成）
-- 私聊
+- 私聊（已完成）
 - 创建房间
 - 发广播
