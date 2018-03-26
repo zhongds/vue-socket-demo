@@ -84,6 +84,7 @@ io.on('connection', function(socket){
 
   socket.on('new private message', function (data) {
     const socketId = socketUser[data.chatUser];
+    delete data.chatUser;
     socket.to(socketId).emit('new private message',data);
   })
 

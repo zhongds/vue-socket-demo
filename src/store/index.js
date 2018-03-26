@@ -15,10 +15,12 @@ export default new Vuex.Store({
       console.log('change username success');
     },
     addPrivateMessage(state, {chatUser, data}) {
-      if (!state.private[chatUser]) {
-        state.private[chatUser] = [];              
+      const privateObj = state.private;
+      if (!privateObj[chatUser]) {
+        privateObj[chatUser] = [];              
       }
-      state.private[chatUser].push(data);      
+      privateObj[chatUser].push(data);
+      state.private = { ...privateObj };
     },
     deletePrivateMessage(state, chatUser) {
       delete state.private[chatUser];

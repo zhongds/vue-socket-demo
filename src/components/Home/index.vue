@@ -11,7 +11,10 @@
         </div>
       </div>
       <div class="private-chat">
-
+        <div class="person" v-for="chatUser in Object.keys(privateChatContent)" :key="chatUser" @click="chatToUser(chatUser)">
+          <div class="chatuser ellipsis" :title="chatUser">{{ chatUser }}</div>
+          <div class="message ellipsis">{{ privateChatContent[chatUser][privateChatContent[chatUser].length - 1].message }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -42,11 +45,18 @@ export default {
           roomName,
         })
       }
+    },
+    chatToUser(chatUser) {
+      this.$router.push({name: 'private-chat', query: {chatUser}});
     }
   },
-  computed: mapState([
-    'username',
-  ])
+  computed: mapState({
+    username: 'username',
+    privateChatContent(state) {
+      console.log('private chat', state.private); 
+      return state.private
+    },
+  })
 }
 </script>
 
@@ -88,4 +98,28 @@ export default {
     width: 100%;
     overflow: auto;
   }
+
+  .person {
+    padding: 10px 0;
+    overflow: hidden;
+  }
+
+  .chatuser {
+    font-weight: bold;
+    float: left;
+    width: 15%;
+    padding-left: 10PX;
+    box-sizing: border-box;
+  }
+  .message {
+    color: #ccc;
+    float: left;
+    width: 85%;
+  }
+  .ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
 </style>

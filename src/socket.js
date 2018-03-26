@@ -43,7 +43,7 @@ socket.on('reconnect', () => {
   console.log(`you have been reconnected`)
 });
 
-function addPrivateMessage(params) {
+export function addPrivateMessage(params) {
   const {chatUser, username, message} = params;
   const data = {
     username,
@@ -52,7 +52,7 @@ function addPrivateMessage(params) {
     type: 'chat-content',
   }
   store.commit('addPrivateMessage', {
-    chatUser, 
+    chatUser: chatUser || username, //chatUser存在的时候，是给别人发的；不存在的时候，是接收到别人发过来的
     data,
   })
 }

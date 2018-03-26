@@ -4,7 +4,7 @@
       <span class="left pointer" @click="goHome">返回</span>
       <span>{{ chatUser }}</span>
     </div>
-    <chat-content :data="contentData"></chat-content>
+    <chat-content :data="contentData || [] "></chat-content>
     <div class="bottom">
       <input type="text" @keyup.enter="chatInputEnter" />
     </div>
@@ -14,6 +14,7 @@
 <script>
 import { mapState } from 'vuex'
 import ChatContent from './ChatContent'
+import { addPrivateMessage } from '@/socket'
 
 export default {
   name: 'private-chat',
@@ -35,19 +36,24 @@ export default {
     chatInputEnter(e) {
       const value = e.target.value.trim();
       if (value) {
-        this.$socket.emit('new private message', {
+        const data = {
           chatUser: this.chatUser,
           username: this.username,
           message: value
-        });
+        };
+        this.$socket.emit('new private message', data);
+        addPrivateMessage(data);
       }
       e.target.value = '';
     },
   },
   computed: {
     ...mapState({
-      username: state => state.username,
-      contentData: state => state.private[this.chatUser] || []
+      username: 'username',
+      contentData(state) {
+        console.log('=========private chat');
+        return state.private[this.chatUser]
+      }
     })
   }
 }

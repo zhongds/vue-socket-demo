@@ -48,7 +48,8 @@ export default {
         return state.username
       },
       roomData(state) {
-        return state.public && state.public[this.roomName]
+        console.log('============room chat');
+        return state.public[this.roomName]
       }
     })
   }
