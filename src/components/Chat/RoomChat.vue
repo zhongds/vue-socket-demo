@@ -1,9 +1,9 @@
 <template>
   <div class="chat">
     <div class="title">
-      <span class="left pointer" @click="goHome">{{username}}</span>
+      <span class="left pointer" @click="goHome">返回</span>
       <span>{{ roomName }} (<span>{{ roomData && roomData.numUsers || 0 }}</span>)</span>
-      <span class="right pointer" @click="test">详情</span>
+      <span class="right pointer">详情</span>
     </div>
     <chat-content :data="roomData && roomData.data || []"></chat-content>
     <div class="bottom">
@@ -41,34 +41,13 @@ export default {
       }
       e.target.value = '';
     },
-    test() {
-      // this.$socket.emit('new message', {
-      //   roomName: 'ttttttttt', 
-      //   message: 'just test', 
-      //   username: '11111'
-      // });
-      // this.$store.commit('addPublicMessage', {
-      //   roomName: '11112321',
-      //   numUsers: 10,
-      //   data:{
-      //     tt: 'sfaa'
-      //   }
-      // })
-      // this.$store.commit('changePublic');
-      // this.$store.commit('setUsername', {name: '123'});
-    }
   },
   computed: {
     ...mapState({
       username: state => {
-        console.log('change username');
         return state.username
       },
       roomData(state) {
-        console.log('this', this);
-        console.log('roomName', this.roomName);
-        console.log('data', state.public);
-        console.log('state', state);
         return state.public && state.public[this.roomName]
       }
     })

@@ -24,21 +24,16 @@ export default new Vuex.Store({
       delete state.private[chatUser];
     },
     addPublicMessage(state, {roomName, numUsers, data}) {
-      if (!state.public[roomName]) {
-        state.public[roomName] = {
+      const publicObj = state.public;
+      if (!publicObj[roomName]) {
+        publicObj[roomName] = {
           numUsers: 0,
           data: []
         };
       }
-      if (numUsers) state.public[roomName].numUsers = numUsers;
-      state.public[roomName].data.push(data);
-      // state.public = {roomName, numUsers, data: []}
-      console.log('===========晚了', state);
-    },
-
-    changePublic(state) {
-      state.public = {name: '123'};
-      console.log('change public success 2333');
+      if (numUsers) publicObj[roomName].numUsers = numUsers;
+      publicObj[roomName].data.push(data);
+      state.public = { ...publicObj };
     },
     deletePublicMessage(state, roomName) {
       delete state.public[roomName];
