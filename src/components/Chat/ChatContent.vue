@@ -2,8 +2,11 @@
   <ul class="content" v-if="data.length" ref="chat-content">
     <template v-for="(item, index) in data">
       <li class="row" v-if="item.type === 'chat-content'" :key="index + 1">
-        <span :class="{username: true, right: item.username === username, textRight: item.username === username}">
-          <router-link :to="{name: 'private-chat', query: {chatUser: item.username}}">{{item.username}}</router-link>
+        <span 
+          :class="{username: true, right: item.username === username, textRight: item.username === username}" 
+          @click="chatToUser(item.username)"
+        >
+          {{item.username}}
         </span>
         <span :class="{messageBody: true, textRight: item.username === username}">{{item.message}}</span>
       </li>
@@ -18,7 +21,15 @@ export default {
   props: {
     data: Array,
     username: String,
+    isPrivate: Boolean,
   },
+  methods: {
+    chatToUser(chatUser) {
+      if(!isPrivate && chatUser !== this.username) {
+        this.$router.push({name: 'private-chat', query: {chatUser}});        
+      }
+    }
+  }
 }
 </script>
 
@@ -42,10 +53,10 @@ export default {
     padding: 0 10px;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: #4CAF50;    
   }
 
   .username a {
-    color: #4CAF50;
     text-decoration: none;
   }
 

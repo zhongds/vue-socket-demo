@@ -4,7 +4,7 @@
       <span class="left pointer" @click="goHome">返回</span>
       <span>{{ chatUser }}</span>
     </div>
-    <chat-content :data="contentData" :username="username"></chat-content>
+    <chat-content :data="contentData" :username="username" :isPrivate="true"></chat-content>
     <div class="bottom">
       <input type="text" @keyup.enter="chatInputEnter" />
     </div>

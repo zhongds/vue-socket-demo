@@ -5,7 +5,7 @@
       <span>{{ roomName }} (<span>{{ roomData.numUsers || 0 }}</span>)</span>
       <span class="right pointer">详情</span>
     </div>
-    <chat-content :data="roomData.data || []" :username="username"></chat-content>
+    <chat-content :data="roomData.data || []" :username="username" :isPrivate="false"></chat-content>
     <div class="bottom">
       <input type="text" @keyup.enter="chatInputEnter" />
     </div>
