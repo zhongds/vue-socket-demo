@@ -32,6 +32,8 @@ export default {
   methods: {
     goHome() {
       this.$socket.emit('leave room');
+      // 离开房间后删除聊天记录
+      // this.$store.commit('deletePublicMessage', this.roomName);
       this.$router.push('/');
     },
     chatInputEnter(e) {

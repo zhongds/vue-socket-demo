@@ -1,5 +1,5 @@
 <template>
-  <div class="private-chat">
+  <div class="chat">
     <div class="title">
       <span class="left pointer" @click="goHome">返回</span>
       <span>{{ chatUser }}</span>
