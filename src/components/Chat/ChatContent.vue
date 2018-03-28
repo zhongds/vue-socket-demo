@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     chatToUser(chatUser) {
-      if(!isPrivate && chatUser !== this.username) {
+      if(!this.isPrivate && chatUser !== this.username) {
         this.$router.push({name: 'private-chat', query: {chatUser}});        
       }
     }
